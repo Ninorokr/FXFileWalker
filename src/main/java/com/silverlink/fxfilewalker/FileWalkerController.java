@@ -22,6 +22,8 @@ public class FileWalkerController implements Initializable {
     TreeItem<String> lvl0folder;
     TreeItem<String> lvl1folder;
     TreeItem<String> lvl2folder;
+    TreeItem<String> folder;
+    TreeItem<String> item;
 
     int level = -1;
 
@@ -31,19 +33,34 @@ public class FileWalkerController implements Initializable {
     SimpleFileVisitor<Path> simp = new SimpleFileVisitor<>(){
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            folder = new TreeItem<>(getName(dir), new ImageView(folderIcon));
             level++;
+            for(int i = 0; i <= level; i++) System.out.print("\t");
+            System.out.println("\uD83D\uDCC1 " + getName(dir));
+
             switch(level){
-                case 0: treeViewFolders.setRoot(new TreeItem<>(getName(dir), new ImageView(folderIcon))); break;
-                case 1: lvl0folder = new TreeItem<>(getName(dir), new ImageView(folderIcon)); treeViewFolders.getRoot().getChildren().add(lvl0folder); break;
-                case 2: lvl1folder = new TreeItem<>(getName(dir), new ImageView(folderIcon)); lvl0folder.getChildren().add(lvl1folder); break;
+                case 0: treeViewFolders.setRoot(folder); break;
+                case 1: lvl0folder = folder; treeViewFolders.getRoot().getChildren().add(lvl0folder); break;
+                case 2: lvl1folder = folder; lvl0folder.getChildren().add(lvl1folder); break;
             }
+
+//            switch(level){
+//                case 0: treeViewFolders.setRoot(new TreeItem<>(getName(dir), new ImageView(folderIcon))); break;
+//                case 1: lvl0folder = new TreeItem<>(getName(dir), new ImageView(folderIcon)); treeViewFolders.getRoot().getChildren().add(lvl0folder); break;
+//                case 2: lvl1folder = new TreeItem<>(getName(dir), new ImageView(folderIcon)); lvl0folder.getChildren().add(lvl1folder); break;
+//            }
+
 
             return super.preVisitDirectory(dir, attrs);
         }
 
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            TreeItem<String> item = new TreeItem<>(getName(file), new ImageView(fileIcon));
+            item = new TreeItem<>(getName(file), new ImageView(fileIcon));
+
+            for(int i = 0; i <= level; i++) System.out.print("\t");
+            System.out.println("\uD83D\uDE0A " + getName(file));
+
             switch(level){
                 case 0: treeViewFolders.getRoot().getChildren().add(item); break;
                 case 1: lvl0folder.getChildren().add(item); break;
