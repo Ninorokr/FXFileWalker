@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,16 +25,17 @@ public class FileWalkerController implements Initializable {
 
     int level = -1;
 
-//    Image folderIcon = new Image(getClass().getResourceAsStream("img/folderIcon64.png"), 10, 10, false, false);
+    Image folderIcon = new Image(getClass().getResourceAsStream("img/folderIcon64.png"), 20, 20, false, false);
+    Image fileIcon = new Image(getClass().getResourceAsStream("img/fileIcon128.png"), 20, 20, false, false);
 
     SimpleFileVisitor<Path> simp = new SimpleFileVisitor<>(){
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
             level++;
             switch(level){
-                case 0: treeViewFolders.setRoot(new TreeItem<>(getName(dir)));break;
-                case 1: lvl0folder = new TreeItem<>(getName(dir)); treeViewFolders.getRoot().getChildren().add(lvl0folder); break;
-                case 2: lvl1folder = new TreeItem<>(getName(dir)); lvl0folder.getChildren().add(lvl1folder); break;
+                case 0: treeViewFolders.setRoot(new TreeItem<>(getName(dir), new ImageView(folderIcon))); break;
+                case 1: lvl0folder = new TreeItem<>(getName(dir), new ImageView(folderIcon)); treeViewFolders.getRoot().getChildren().add(lvl0folder); break;
+                case 2: lvl1folder = new TreeItem<>(getName(dir), new ImageView(folderIcon)); lvl0folder.getChildren().add(lvl1folder); break;
             }
 
             return super.preVisitDirectory(dir, attrs);
@@ -41,10 +43,13 @@ public class FileWalkerController implements Initializable {
 
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            TreeItem<String> item = new TreeItem<>(getName(file));
+            TreeItem<String> item = new TreeItem<>(getName(file), new ImageView(fileIcon));
             switch(level){
-                case 0:
+                case 0: treeViewFolders.getRoot().getChildren().add(item); break;
+                case 1: lvl0folder.getChildren().add(item); break;
+                case 2: lvl1folder.getChildren().add(item); break;
             }
+
             return super.visitFile(file, attrs);
         }
 
