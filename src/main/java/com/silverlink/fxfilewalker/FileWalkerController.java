@@ -89,7 +89,7 @@ public class FileWalkerController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            Files.walkFileTree(Path.of("D:\\root"), simp);
+            Files.walkFileTree(Path.of(".\\root"), simp);
         } catch(IOException ioe){
             ioe.printStackTrace();
         }
